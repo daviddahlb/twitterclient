@@ -26,13 +26,25 @@ public class TimelineActivity extends AppCompatActivity {
     private TweetsAdapter adapter;
     private List<Tweet> tweets;
     private SwipeRefreshLayout swipeContainer;
+    private EndlessRecyclerViewScrollListener scrollListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
 
+        LinearLayoutManager linearLayoutManager =  new LinearLayoutManager(this);
         swipeContainer = (SwipeRefreshLayout)findViewById(R.id.swipeContainer);
+        client = TwitterApp.getRestClient(this);
+        // Find the recycler view
+        rvTweets = findViewById(R.id.rvTweets);
+        // Initialize the list of tweets and adapter from the data source
+        tweets = new ArrayList<>();
+        adapter = new TweetsAdapter(this, tweets);
+        // set up Recycler View: 1)layout manager and 2)setting the adapter
+        rvTweets.setLayoutManager(linearLayoutManager);
+        rvTweets.setAdapter(adapter);
+
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -42,45 +54,50 @@ public class TimelineActivity extends AppCompatActivity {
                 populateHomeTimeLine();
             }
         });
-        
-        client = TwitterApp.getRestClient(this);
-
-        // Find the recycler view
-        rvTweets = findViewById(R.id.rvTweets);
-        // Initialize the list of tweets and adapter from the data source
-        tweets = new ArrayList<>();
-        adapter = new TweetsAdapter(this, tweets);
-        // set up Recycler View: 1)layout manager and 2)setting the adapter
-        rvTweets.setLayoutManager(new LinearLayoutManager(this));
-        rvTweets.setAdapter(adapter);
-        populateHomeTimeLine();
 
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
+        // Retain an instance so that you can call `resetState()` for fresh searches
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                Log.d("smile", "onLoadMore");
+                loadNextDataFromApi(page);
+                List<Tweet> moreTweets = Tweet.createContactsList(10, page);
+                final int curSize = adapter.getItemCount();
+                tweets.addAll(moreTweets);
+
+                view.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyItemRangeInserted(curSize, allContacts.size() - 1);
+                    }
+                });
+            }
+        };
+
+        // Adds the scroll listener to RecyclerView
+        rvTweets.addOnScrollListener(scrollListener);
+        populateHomeTimeLine();
     }
 
-    public void fetchTimelineAsync(int page) {
-        client.getHomeTimeline(new JsonHttpResponseHandler(){
-            public void onSuccess(JSONArray json){
-                adapter.clear();
-                adapter.addAll(tweets);
-                swipeContainer.setRefreshing(false);
-            }
-            public void onFailure(Throwable e) {
-                Log.d("DEBUG", "Fetch timeline error: " + e.toString());
-            }
-        });
+    private void loadNextDataFromApi(int offset) {
+        // Send an API request to retrieve appropriate paginated data
+        //  --> Send the request including an offset value (i.e `page`) as a query parameter.
+        //  --> Deserialize and construct new model objects from the API response
+        //  --> Append the new data objects to the existing set of items inside the array of items
+        //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
     }
 
     private void populateHomeTimeLine() {
         client.getHomeTimeline(new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                Log.d("twitterClient", "inside onsuccess");
-                Log.d("twitterClient", response.toString());
                 // Iterate through the list of tweets
                 for(int i = 0; i < response.length(); i++){
                     try {
