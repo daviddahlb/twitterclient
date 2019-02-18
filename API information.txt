@@ -1,0 +1,7 @@
+Twitter app
+API Key: wzlkU2PHRcG8jmonKDIc3mQeB 
+API Secret Key: 3VGamJjGqBFcKTauGNwFLcUo1QywNYJae83BNwgtte4FKyliuq 
+
+Resource URL
+https://api.twitter.com/1.1/statuses/home_timeline.json
+
