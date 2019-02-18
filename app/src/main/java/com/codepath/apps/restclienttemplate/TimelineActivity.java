@@ -67,10 +67,11 @@ public class TimelineActivity extends AppCompatActivity {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
                 Log.d("smile", "onLoadMore");
-                loadNextDataFromApi(page);
-                List<Tweet> moreTweets = Tweet.createContactsList(10, page);
+                int oldestTweet = 1;
+                loadNextDataFromApi(oldestTweet);
+                //List<Tweet> moreTweets = Tweet.createContactsList(10, page);
                 final int curSize = adapter.getItemCount();
-                tweets.addAll(moreTweets);
+                //tweets.addAll(moreTweets);
 
                 view.post(new Runnable() {
                     @Override
@@ -86,12 +87,15 @@ public class TimelineActivity extends AppCompatActivity {
         populateHomeTimeLine();
     }
 
-    private void loadNextDataFromApi(int offset) {
+    private void loadNextDataFromApi(int oldestTweet) {
         // Send an API request to retrieve appropriate paginated data
         //  --> Send the request including an offset value (i.e `page`) as a query parameter.
         //  --> Deserialize and construct new model objects from the API response
         //  --> Append the new data objects to the existing set of items inside the array of items
         //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
+        client.getNextTimeline(new JsonHttpResponseHandler(), oldestTweet{
+            
+        });
     }
 
     private void populateHomeTimeLine() {
