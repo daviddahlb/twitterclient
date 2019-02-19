@@ -66,9 +66,16 @@ public class TimelineActivity extends AppCompatActivity {
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
+                long oldestTweetId = tweets.get(0).uid;
                 Log.d("smile", "onLoadMore");
-                int oldestTweet = 1;
-                loadNextDataFromApi(oldestTweet);
+                for (int i = 0; i < tweets.size(); i++){
+                    //iterate through tweets to find oldest (smallest) id
+                    long temp = tweets.get(i).uid;
+                    if( temp < oldestTweetId ){
+                        oldestTweetId = temp;
+                    }
+                }
+                loadNextDataFromApi(oldestTweetId);
                 //List<Tweet> moreTweets = Tweet.createContactsList(10, page);
                 final int curSize = adapter.getItemCount();
                 //tweets.addAll(moreTweets);
@@ -76,7 +83,8 @@ public class TimelineActivity extends AppCompatActivity {
                 view.post(new Runnable() {
                     @Override
                     public void run() {
-                        adapter.notifyItemRangeInserted(curSize, allContacts.size() - 1);
+                        adapter.notifyItemRangeInserted(curSize, tweets.size() - 1);
+                        resetState();
                     }
                 });
             }
@@ -87,15 +95,13 @@ public class TimelineActivity extends AppCompatActivity {
         populateHomeTimeLine();
     }
 
-    private void loadNextDataFromApi(int oldestTweet) {
+    private void loadNextDataFromApi(long oldestTweetId) {
         // Send an API request to retrieve appropriate paginated data
         //  --> Send the request including an offset value (i.e `page`) as a query parameter.
         //  --> Deserialize and construct new model objects from the API response
         //  --> Append the new data objects to the existing set of items inside the array of items
         //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
-        client.getNextTimeline(new JsonHttpResponseHandler(), oldestTweet{
-            
-        });
+        client.getNextTimeline(new JsonHttpResponseHandler(), oldestTweetId);
     }
 
     private void populateHomeTimeLine() {
