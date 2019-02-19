@@ -25,8 +25,8 @@ public class TimelineActivity extends AppCompatActivity {
     RecyclerView rvTweets;
     private TweetsAdapter adapter;
     private List<Tweet> tweets;
-    private SwipeRefreshLayout swipeContainer;
-    private EndlessRecyclerViewScrollListener scrollListener;
+    //private SwipeRefreshLayout swipeContainer;
+    //private EndlessRecyclerViewScrollListener scrollListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +34,12 @@ public class TimelineActivity extends AppCompatActivity {
         setContentView(R.layout.activity_timeline);
 
         LinearLayoutManager linearLayoutManager =  new LinearLayoutManager(this);
-        swipeContainer = (SwipeRefreshLayout)findViewById(R.id.swipeContainer);
+/*        swipeContainer = (SwipeRefreshLayout)findViewById(R.id.swipeContainer);
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);*/
+
         client = TwitterApp.getRestClient(this);
         // Find the recycler view
         rvTweets = findViewById(R.id.rvTweets);
@@ -45,36 +50,25 @@ public class TimelineActivity extends AppCompatActivity {
         rvTweets.setLayoutManager(linearLayoutManager);
         rvTweets.setAdapter(adapter);
 
+        populateHomeTimeLine();
+/*
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                adapter.clear();
-                adapter.addAll(tweets);
-                swipeContainer.setRefreshing(false);
                 populateHomeTimeLine();
             }
-        });
+        });*/
 
-        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-
+        //rvTweets.addOnScrollListener(scrollListener);
+/*
         // Retain an instance so that you can call `resetState()` for fresh searches
         scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
-                long oldestTweetId = tweets.get(0).uid;
+                long oldestTweetId = tweets.get(tweets.size() - 1).uid;
                 Log.d("smile", "onLoadMore");
-                for (int i = 0; i < tweets.size(); i++){
-                    //iterate through tweets to find oldest (smallest) id
-                    long temp = tweets.get(i).uid;
-                    if( temp < oldestTweetId ){
-                        oldestTweetId = temp;
-                    }
-                }
                 loadNextDataFromApi(oldestTweetId);
                 //List<Tweet> moreTweets = Tweet.createContactsList(10, page);
                 final int curSize = adapter.getItemCount();
@@ -88,13 +82,11 @@ public class TimelineActivity extends AppCompatActivity {
                     }
                 });
             }
-        };
+        };*/
 
         // Adds the scroll listener to RecyclerView
-        rvTweets.addOnScrollListener(scrollListener);
-        populateHomeTimeLine();
     }
-
+/*
     private void loadNextDataFromApi(long oldestTweetId) {
         // Send an API request to retrieve appropriate paginated data
         //  --> Send the request including an offset value (i.e `page`) as a query parameter.
@@ -102,7 +94,7 @@ public class TimelineActivity extends AppCompatActivity {
         //  --> Append the new data objects to the existing set of items inside the array of items
         //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
         client.getNextTimeline(new JsonHttpResponseHandler(), oldestTweetId);
-    }
+    }*/
 
     private void populateHomeTimeLine() {
         client.getHomeTimeline(new JsonHttpResponseHandler(){
@@ -111,10 +103,10 @@ public class TimelineActivity extends AppCompatActivity {
                 // Iterate through the list of tweets
                 for(int i = 0; i < response.length(); i++){
                     try {
-                        Log.d("twitterClient", "iterating data");
                         // Convert each JSON object into a Tweet object
                         JSONObject jsonTweetObject = response.getJSONObject(i);
                         Tweet tweet = Tweet.fromJson(jsonTweetObject);
+                        Log.d("twitterClient", "proimageurl: " + tweet.user.profileImageUrl);
                         // Add the tweet into our data source
                         tweets.add(tweet);
                         // Notify the adapter
@@ -123,6 +115,9 @@ public class TimelineActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
+/*                //adapter.clear();
+                adapter.addAll(tweets);
+                swipeContainer.setRefreshing(false);*/
             }
 
             @Override
