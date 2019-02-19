@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/ivProfileImage"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="10dp"
@@ -20,22 +20,24 @@
         android:id="@+id/tvScreenName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:layout_toEndOf="@+id/ivProfileImage"
+        android:layout_toEndOf="@+id/tvName"
         android:text="TextView"
-        tools:text="AvatarName" />
+        tools:text=".@screenName" />
 
     <TextView
         android:id="@+id/tvBody"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvScreenName"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="3dp"
         android:layout_toEndOf="@+id/ivProfileImage"
         android:text="TextView"
-        tools:text="This is a tweet! Are you ready for this>?!?!" />
+        android:lineSpacingExtra="1dp"
+        tools:text="This is a tweet! Are you ready for this>?!?! this is a longer tweet so we can examine the line spacing between lines, like when there are more than one line like this tweet." />
 
     <TextView
         android:id="@+id/tvTime"
@@ -43,8 +45,27 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_toEndOf="@+id/tvScreenName"
         android:text="TextView"
-        tools:text="18m ago" />
+        tools:text="• 18m" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/ivProfileImage"
+        android:text="TextView"
+        tools:text="DAVID DAHLBERG"
+        android:textStyle="bold"/>
 </RelativeLayout>

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 
 import java.util.List;
@@ -35,9 +36,10 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Tweet tweet = tweets.get(position);
         holder.tvBody.setText(tweet.body);
-        holder.tvScreenName.setText(tweet.user.screenName);
-        Glide.with(context).load(tweet.user.profileImageUrl).into(holder.ivProfileImage);
-        holder.tvTime.setText(tweet.getFormattedTimestamp());
+        holder.tvScreenName.setText("@" + tweet.user.screenName);
+        Glide.with(context).load(tweet.user.profileImageUrl).apply(RequestOptions.circleCropTransform()).into(holder.ivProfileImage);
+        holder.tvTime.setText("• " + tweet.getFormattedTimestamp());
+        holder.tvName.setText(tweet.user.name);
     }
 
     @Override
@@ -63,6 +65,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         public TextView tvScreenName;
         public TextView tvBody;
         public TextView tvTime;
+        public TextView tvName;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -70,6 +73,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
             tvBody = itemView.findViewById(R.id.tvBody);
             tvTime = itemView.findViewById(R.id.tvTime);
+            tvName = itemView.findViewById(R.id.tvName);
         }
     }
 }
