@@ -25,7 +25,7 @@ public class TimelineActivity extends AppCompatActivity {
     RecyclerView rvTweets;
     private TweetsAdapter adapter;
     private List<Tweet> tweets;
-    //private SwipeRefreshLayout swipeContainer;
+    private SwipeRefreshLayout swipeContainer;
     //private EndlessRecyclerViewScrollListener scrollListener;
 
     @Override
@@ -34,11 +34,11 @@ public class TimelineActivity extends AppCompatActivity {
         setContentView(R.layout.activity_timeline);
 
         LinearLayoutManager linearLayoutManager =  new LinearLayoutManager(this);
-/*        swipeContainer = (SwipeRefreshLayout)findViewById(R.id.swipeContainer);
+        swipeContainer = (SwipeRefreshLayout)findViewById(R.id.swipeContainer);
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);*/
+                android.R.color.holo_red_light);
 
         client = TwitterApp.getRestClient(this);
         // Find the recycler view
@@ -51,13 +51,12 @@ public class TimelineActivity extends AppCompatActivity {
         rvTweets.setAdapter(adapter);
 
         populateHomeTimeLine();
-/*
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 populateHomeTimeLine();
             }
-        });*/
+        });
 
         //rvTweets.addOnScrollListener(scrollListener);
 /*
@@ -101,6 +100,7 @@ public class TimelineActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 // Iterate through the list of tweets
+                ArrayList<Tweet> tweetsToAdd = new ArrayList<>();
                 for(int i = 0; i < response.length(); i++){
                     try {
                         // Convert each JSON object into a Tweet object
@@ -108,16 +108,16 @@ public class TimelineActivity extends AppCompatActivity {
                         Tweet tweet = Tweet.fromJson(jsonTweetObject);
                         Log.d("twitterClient", "proimageurl: " + tweet.user.profileImageUrl);
                         // Add the tweet into our data source
-                        tweets.add(tweet);
+                        tweetsToAdd.add(tweet);
                         // Notify the adapter
-                        adapter.notifyItemInserted(tweets.size() - 1);
+                        //adapter.notifyItemInserted(tweets.size() - 1);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
-/*                //adapter.clear();
-                adapter.addAll(tweets);
-                swipeContainer.setRefreshing(false);*/
+                adapter.clear();
+                adapter.addAll(tweetsToAdd);
+                swipeContainer.setRefreshing(false);
             }
 
             @Override
