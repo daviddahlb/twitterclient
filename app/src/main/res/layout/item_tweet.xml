@@ -50,12 +50,12 @@
         android:layout_toEndOf="@+id/tvScreenName"
         android:text="TextView"
         tools:text="• 18m" />
-
+<!--
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="?android:attr/listDivider" />
+        android:background="?android:attr/listDivider" />-->
 
     <TextView
         android:id="@+id/tvName"

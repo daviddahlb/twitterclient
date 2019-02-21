@@ -5,6 +5,9 @@ import com.codepath.apps.restclienttemplate.TimeFormatter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Tweet {
 
     public String body;
@@ -22,6 +25,14 @@ public class Tweet {
         tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
 
         return tweet;
+    }
+
+    public static List<Tweet> createTweetList(JSONObject jsonObject, int i) {
+        List<Tweet> list = new ArrayList<Tweet>();
+
+
+
+        return list;
     }
 
     public String getFormattedTimestamp(){
