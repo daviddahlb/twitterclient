@@ -4,10 +4,13 @@ import android.content.Intent;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codepath.apps.restclienttemplate.models.Tweet;
@@ -27,6 +30,7 @@ public class ComposeActivity extends AppCompatActivity {
     private EditText etCompose;
     private Button btnTweet;
     private TwitterClient client;
+    private TextView tvCharCounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,32 @@ public class ComposeActivity extends AppCompatActivity {
         client = TwitterApp.getRestClient(this);
         etCompose = findViewById(R.id.etCompose);
         btnTweet = findViewById(R.id.btnTweet);
+        tvCharCounter = findViewById(R.id.tvCharCounter);
+
+        // set listener on text being input into the EditText Compose textview
+        etCompose.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //Log.d("twitterclient", "ontextChanged pressed");
+                btnTweet.setClickable(true);
+                int num = etCompose.getText().toString().length();
+                tvCharCounter.setText(Integer.toString(140 - num));
+                if (140 - num < 0){
+                    // disable tweet button
+                    btnTweet.setClickable(false);
+                }
+        }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         // Set click listener on button
         btnTweet.setOnClickListener(new View.OnClickListener(){

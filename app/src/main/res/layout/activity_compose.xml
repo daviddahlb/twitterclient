@@ -31,4 +31,25 @@
         android:text="Tweet"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etCompose" />
+
+    <TextView
+        android:id="@+id/tvCharCounter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="15dp"
+        android:text="140"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etCompose"
+        tools:text="140" />
+
+    <TextView
+        android:id="@+id/tvCharsRemaining"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="15dp"
+        android:text="Characters Remaining"
+        app:layout_constraintStart_toEndOf="@+id/tvCharCounter"
+        app:layout_constraintTop_toBottomOf="@+id/etCompose" />
 </android.support.constraint.ConstraintLayout>
