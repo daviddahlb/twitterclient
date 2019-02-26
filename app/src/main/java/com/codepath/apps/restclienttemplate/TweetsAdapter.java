@@ -2,8 +2,13 @@ package com.codepath.apps.restclienttemplate;
 
 import android.content.Context;
 import android.media.Image;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,9 +37,12 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         return new ViewHolder(view);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Tweet tweet = tweets.get(position);
+        //Spannable span = new SpannableStringBuilder(tweet.body);
+        //String test = Html.toHtml(span, 0);
         holder.tvBody.setText(tweet.body);
         holder.tvScreenName.setText("@" + tweet.user.screenName);
         Glide.with(context).load(tweet.user.profileImageUrl).apply(RequestOptions.circleCropTransform()).into(holder.ivProfileImage);
